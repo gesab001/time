@@ -12,10 +12,12 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="apple-touch-startup-image" href="https://raw.githubusercontent.com/gesab001/assets/master/images/app-icons/time/icon-192x192.png">
 <meta name="apple-mobile-web-app-title" content="Time">
-  <link rel="icon" type="image/x-icon" href="./favicon.ico">
+<link rel="icon" type="image/x-icon" href="./favicon.ico">
 <link rel="manifest" href="./manifest.json" />
-
-
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+ <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
 <script
   async
   src="https://unpkg.com/pwacompat"
@@ -63,19 +65,64 @@ p {
 </div>
 
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
-  <a class="navbar-brand" href="#">Logo</a>
+  <a class="navbar-brand" href="#">Time</a>
   <ul class="navbar-nav">
     <li class="nav-item">
-      <a class="nav-link" href="#">Link</a>
+      <a class="nav-link" href="#">Calendar</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#">Link</a>
+      <a class="nav-link" href="#">Timer</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Stopwatch</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">World Clock</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Time Since</a>
     </li>
   </ul>
 </nav>
 
+<div ng-app="myApp" ng-controller="myCtrl">
+ 
+<p>Input something in the input box:</p>
+<p>Name : <input type="text" ng-model="name" placeholder="Enter name here"></p>
+<h1>Hello AngularJS {{ firstName + " " + lastName }}</h1>
+
+</div>
+
+<div id="reactapp"></div>
+
+
+</body>
 
 <script>
+//ANGULARJS
+var app = angular.module("myApp", []);
+
+app.controller("myCtrl", function($scope) {
+  $scope.firstName = "John";
+  $scope.lastName = "Doe";
+});
+
+</script>
+
+<script type="text/babel">
+//REACTJS
+      class Hello extends React.Component {
+        render() {
+          return <h1>Hello ReactJS!</h1>
+        }
+      }
+
+      ReactDOM.render(<Hello />, document.getElementById('reactapp'))
+</script>
+
+
+<script>
+//PURE JAVASCRIPT
 // Set the date we're counting down to
 var countDownDate = new Date("Jan 1, 2021 12:00:00").getTime();
 
@@ -105,7 +152,5 @@ var x = setInterval(function() {
   }
 }, 1000);
 </script>
-
-</body>
 </html>
 
