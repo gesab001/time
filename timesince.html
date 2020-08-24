@@ -66,7 +66,7 @@ p {
 </div>
 
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
-  <a class="navbar-brand" href="#">Time</a>
+  <a class="navbar-brand" href="index.html">Home</a>
   <ul class="navbar-nav">
     <li class="nav-item">
       <a class="nav-link" href="calendar.html">Calendar</a>
@@ -90,17 +90,21 @@ p {
 </nav>
 
 <div ng-app="myApp" ng-controller="myCtrl">
- 
+     {{httperrorMessage}}
     <p>Enter title : <input type="text" ng-model="title" placeholder="Enter title here"></p>
-    <p>Enter minutes : <input type="text" ng-model="minutes" placeholder="Enter minutes here"></p>
-    <button ng-click="addTimer()">Add</button>
 
+    <button ng-click="addTimer()">Add</button>
+      
     <div ng-repeat="item in timerlist track by $index">
            
             <div class="card">
-              <div class="card-header"><h1 class="card-title">{{item.name}}</h1></div>
-              <div id="{{item.name}}" class="card-body">{{item.timeleft}}</div>
-              <div class="card-footer"><button ng-click="start($index)" >start</button><button>remove</button></div>
+              <div class="card-header"><h1 class="card-title">{{item.name}} added on {{item.startDate | date}}</h1></div>
+              <div id="{{item.name}}" class="card-body">{{item.timesince}}</div>
+              <div class="card-footer">
+                    <button ng-click="start($index)" >start</button >
+                    <button ng-click="cancelTimer($index)">cancel   </button>
+                    <button ng-click="removeTimer($index)">remove</button>
+              </div>
             </div>
     </div>
 </div>
@@ -114,29 +118,94 @@ p {
 //ANGULARJS
 var app = angular.module("myApp", []);
 
-app.controller("myCtrl", function($scope, $interval) {
+app.controller("myCtrl", function($scope, $interval, $http) {
+
+
+
+
 
   $scope.theTime = new Date().toLocaleTimeString();
-  $scope.timerlist = [];
+  $scope.timerlist = getData();
+  $scope.promises = {};
   $scope.title = "";
-  $scope.minutes = "";
+  $scope.httperrorMessage = "no error";
+  $scope.start;
+
   $scope.addTimer = function() {
-        var jsonobj = {"name": $scope.title, "duration": $scope.minutes, "timeleft": 30};
+        var startDate =  new Date().getTime();
+        var jsonobj = {"name": $scope.title,  "startDate": startDate, "timesince": 0};
         $scope.timerlist.push(jsonobj);
+        saveToLocalStorage($scope.timerlist);
+        $rootScope.$apply();
+
+    };
+ $scope.removeTimer = function(index) {
+
+        var timername = $scope.timerlist[index]["name"];
+        var promisename = $scope.promises[timername];
+        $interval.cancel(promisename);
+        $scope.timerlist.splice(index,1); 
+        saveToLocalStorage($scope.timerlist);
+        $rootScope.$apply();
+
+    };
+ $scope.cancelTimer = function(index) {
+
+        var timername = $scope.timerlist[index]["name"];
+        var duration = $scope.timerlist[index]["startDate"];
+        $scope.timerlist[index]["timesince"] = 0;
+        var promisename = $scope.promises[timername];
+        $interval.cancel(promisename);
         $rootScope.$apply();
 
     };
   $scope.start = function(index) {
+
+     var  startDate = $scope.timerlist[index]["startDate"];
      var promise;
-     var decrementTime = function () {
-        $scope.timerlist[index]["timeleft"] = $scope.timerlist[index]["timeleft"] -1;
-        if ($scope.timerlist[index]["timeleft"]<1){     $interval.cancel(promise); }
+     var incrementTime = function () {
+        var timesince = new Date().getTime();
+        var distance = timesince - startDate;
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        $scope.timerlist[index]["timesince"] = days + "d " + hours + "h " + minutes + "m " + seconds + "s since " + $scope.timerlist[index]["name"];
+  
      }
-     promise = $interval(decrementTime, 1000);   
-    
+     promise = $interval(incrementTime, 1000);
+     var timername =  $scope.timerlist[index]["name"]; 
+     $scope.promises[timername] = promise; 
   };
+  
+  for (var x=0; x<$scope.timerlist.length; x++){
+     $scope.start(x);
+  }
+
+  
+
 });
 
+
+function saveToLocalStorage(jsondata){
+    // Check browser support
+    if (typeof(Storage) !== "undefined") {
+
+      localStorage.setItem("timesince", JSON.stringify(jsondata));
+    
+    } 
+}
+
+function getData(){
+    var jsondata = localStorage.getItem("timesince");
+    if (jsondata){
+
+    }else{
+       jsondata = [];
+    }   
+    return JSON.parse(jsondata);
+     
+}
 </script>
 
 <script type="text/babel">
@@ -149,7 +218,6 @@ app.controller("myCtrl", function($scope, $interval) {
 
       ReactDOM.render(<Hello />, document.getElementById('reactapp'))
 </script>
-
 
 
 </html>
