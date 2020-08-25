@@ -98,9 +98,11 @@ p {
 <div ng-app="myApp" ng-controller="myCtrl">
      {{httperrorMessage}}
     <p>Enter title : <input type="text" ng-model="title" placeholder="Enter title here"></p>
-
+    <p>Paste timer json string : <input type="text" ng-model="timerlistfile" placeholder="Paste here"></p>
+    <button ng-click="loadFile()">loadFile</button>
     <button ng-click="addTimer()">Add</button>
-    <button ng-click="saveToFile()">Save to File</button>  
+    <button ng-click="saveToFile()">Save Timers to File</button>  
+    
     <div ng-repeat="item in timerlist track by $index">
            
             <div class="card">
@@ -135,6 +137,8 @@ app.controller("myCtrl", function($scope, $interval) {
   $scope.promises = {};
   $scope.title = "";
   $scope.httperrorMessage = "no error";
+  $scope.timerlistfile = "";
+
   $scope.start;
 
   $scope.addTimer = function() {
@@ -145,7 +149,12 @@ app.controller("myCtrl", function($scope, $interval) {
         $rootScope.$apply();
 
     };
+  $scope.loadFile = function() {
+        $scope.timerlist = JSON.parse($scope.timerlistfile);        
+        saveToLocalStorage($scope.timerlist);
+        $rootScope.$apply();
 
+    };
  $scope.removeTimer = function(index) {
 
         var timername = $scope.timerlist[index]["name"];
