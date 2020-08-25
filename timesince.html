@@ -98,8 +98,14 @@ p {
 <div ng-app="myApp" ng-controller="myCtrl">
      {{httperrorMessage}}
     <p>Enter title : <input type="text" ng-model="title" placeholder="Enter title here"></p>
-    <p>Paste timer json string : <input type="text" ng-model="timerlistfile" placeholder="Paste here"></p>
+    <p>Paste timer json string : <input type="text"  id="output" ng-model="timerlistfile" placeholder="Paste here"></p>
     <p>Paste timer json url : <input type="text" ng-model="timerlisturl" placeholder="Paste here"></p>
+{{timerlistfile}}
+  <input type="file" name="inputfile"
+            id="inputfile"> 
+    <br> 
+   
+    <pre i></pre> 
     <button ng-click="loadFile()">load file</button>
     <button ng-click="loadUrl()">load  url file</button>
     <button ng-click="addTimer()">Add</button>
@@ -265,6 +271,19 @@ function getData(){
       ReactDOM.render(<Hello />, document.getElementById('reactapp'))
 </script>
 
+  <script type="text/javascript"> 
+        document.getElementById('inputfile') 
+            .addEventListener('change', function() { 
+              
+            var fr=new FileReader(); 
+            fr.onload=function(){ 
+                document.getElementById('output') 
+                        .value=fr.result; 
+            } 
+              
+            fr.readAsText(this.files[0]); 
+        }) 
+    </script> 
 
 </html>
 
