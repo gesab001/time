@@ -163,6 +163,7 @@ app.controller("myCtrl", function($scope, $interval, $http) {
         $scope.timerlist = JSON.parse($scope.timerlistfile);        
         saveToLocalStorage($scope.timerlist);
         $rootScope.$apply();
+        $scope.loadAllTimers();
 
     };
 
