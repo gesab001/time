@@ -118,7 +118,7 @@ p {
 //ANGULARJS
 var app = angular.module("myApp", []);
 
-app.controller("myCtrl", function($scope, $interval, $http) {
+app.controller("myCtrl", function($scope, $interval) {
 
 
 
@@ -178,8 +178,10 @@ app.controller("myCtrl", function($scope, $interval, $http) {
      $scope.promises[timername] = promise; 
   };
   
-  for (var x=0; x<$scope.timerlist.length; x++){
-     $scope.start(x);
+  if ($scope.timerlist.length>0){
+      for (var x=0; x<$scope.timerlist.length; x++){
+         $scope.start(x);
+      }
   }
 
   
@@ -191,20 +193,22 @@ function saveToLocalStorage(jsondata){
     // Check browser support
     if (typeof(Storage) !== "undefined") {
 
-      localStorage.setItem("timesince", JSON.stringify(jsondata));
+      localStorage.setItem("timesincetimer", JSON.stringify(jsondata));
     
     } 
 }
 
 function getData(){
-    var jsondata = localStorage.getItem("timesince");
-    if (jsondata){
+  var jsondata = [];
+  if("timesincetimer" in localStorage){
+  
+    jsondata = JSON.parse(localStorage.getItem("timesincetimer"));
 
-    }else{
-       jsondata = [];
-    }   
-    return JSON.parse(jsondata);
-     
+  } else {
+
+   jsondata = [];
+  }
+  return jsondata;
 }
 </script>
 

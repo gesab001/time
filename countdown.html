@@ -86,7 +86,7 @@ p {
   </ul>
 </nav>
 
-<div ng-app="myApp" ng-controller="myCtrl">
+<div ng-app="myApp1" ng-controller="myCtrl1">
  
     <p>Enter title : <input type="text" ng-model="title" placeholder="Enter title here"></p>
     <p>Enter date : <input type="date" ng-model="date" placeholder="mm / dd / yyyy"></p>
@@ -115,22 +115,23 @@ p {
 
 <script>
 //ANGULARJS
-var app = angular.module("myApp", []);
+var app = angular.module("myApp1", []);
 
-app.controller("myCtrl", function($scope, $interval) {
+app.controller("myCtrl1", function($scope, $interval) {
 
 
 
 
 
   $scope.theTime = new Date().toLocaleTimeString();
-  $scope.timerlist = [];
+  $scope.timerlist = getData();
   $scope.promises = {};
   $scope.title = "";
   $scope.date = "";
   $scope.addTimer = function() {
-        var jsonobj = {"name": $scope.title, "endDate": $scope.date, "timeleft": 0};
+        var jsonobj = {"name": $scope.title, "endDate": $scope.date.getTime(), "timeleft": 0};
         $scope.timerlist.push(jsonobj);
+        saveToLocalStorage($scope.timerlist);
         $rootScope.$apply();
 
     };
@@ -140,6 +141,7 @@ app.controller("myCtrl", function($scope, $interval) {
         var promisename = $scope.promises[timername];
         $interval.cancel(promisename);
         $scope.timerlist.splice(index,1); 
+        saveToLocalStorage($scope.timerlist);
         $rootScope.$apply();
 
     };
@@ -153,7 +155,7 @@ app.controller("myCtrl", function($scope, $interval) {
 
     };
   $scope.start = function(index) {
-     var endDate = $scope.timerlist[index]["endDate"].getTime();  
+     var endDate = $scope.timerlist[index]["endDate"];  
      
      var promise;
      var decrementTime = function () {
@@ -174,9 +176,36 @@ app.controller("myCtrl", function($scope, $interval) {
      $scope.promises[timername] = promise; 
   };
 
-  
+ if ($scope.timerlist.length>0){
+      for (var x=0; x<$scope.timerlist.length; x++){
+         $scope.start(x);
+      }
+  }
 
 });
+
+
+function saveToLocalStorage(jsondata){
+    // Check browser support
+    if (typeof(Storage) !== "undefined") {
+
+      localStorage.setItem("countdowntimer", JSON.stringify(jsondata));
+    
+    } 
+}
+
+function getData(){
+  var jsondata = [];
+  if("countdowntimer" in localStorage){
+  
+
+    jsondata = JSON.parse(localStorage.getItem("countdowntimer"));
+  } else {
+
+   jsondata = [];
+  }
+  return jsondata;
+}
 
 </script>
 
