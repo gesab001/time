@@ -68,8 +68,10 @@ p {
 <p id="demo"></p>
 </div>
 
- <div w3-include-html="nav-menu.html"></div> 
-
+<div w3-include-html="nav-menu.html"></div> 
+ <script>
+includeHTML();
+</script>
 
 <div ng-app="myApp" ng-controller="myCtrl">
  
@@ -92,9 +94,7 @@ p {
 
 </body>
 
- <script>
-includeHTML();
-</script> 
+ 
 <script>
 //ANGULARJS
 var app = angular.module("myApp", []);
