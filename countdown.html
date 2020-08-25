@@ -19,6 +19,7 @@
   <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
   <script src="newyear.js"></script>
+  <script src="include.js"></script>
 <script
   async
   src="https://unpkg.com/pwacompat"
@@ -65,34 +66,10 @@ p {
 <p id="demo"></p>
 </div>
 
-<nav class="navbar navbar-expand-md bg-dark navbar-dark sticky-top">
-  <a class="navbar-brand" href="#">Time</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="collapsibleNavbar">
-    <ul class="navbar-nav">
-      <li class="nav-item">
-      <a class="nav-link" href="calendar.html">Calendar</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="timer.html">Timer</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="stopwatch.html">Stopwatch</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="worldclock.html">World Clock</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="timesince.html">Time Since</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="countdown.html">Countdown</a>
-    </li>
-    </ul>
-  </div>  
-</nav>
+<div w3-include-html="nav-menu.html"></div> 
+ <script>
+includeHTML();
+</script> 
 
 <div ng-app="myApp1" ng-controller="myCtrl1">
  
