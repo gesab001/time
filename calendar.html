@@ -178,10 +178,15 @@ body {
 <p style="font-size:60px; text-align: center" id="demo"></p>
 </div>
 
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+
+<nav class="navbar navbar-expand-md bg-dark navbar-dark sticky-top">
   <a class="navbar-brand" href="#">Time</a>
-  <ul class="navbar-nav">
-    <li class="nav-item">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+      <li class="nav-item">
       <a class="nav-link" href="calendar.html">Calendar</a>
     </li>
     <li class="nav-item">
@@ -199,8 +204,10 @@ body {
     <li class="nav-item">
       <a class="nav-link" href="countdown.html">Countdown</a>
     </li>
-  </ul>
+    </ul>
+  </div>  
 </nav>
+
 <div class="wrapper">
 <div class="container-calendar">
 <h3 id="monthAndYear"></h3>
