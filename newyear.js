@@ -1,9 +1,11 @@
 //PURE JAVASCRIPT
 // Set the date we're counting down to
-var countDownDate = new Date("Jan 1, 2021 12:00:00").getTime();
-
 var newYear = new Date();
 newYear.setFullYear(newYear.getFullYear() + 1); // timestamp
+var nextYear = newYear.getFullYear();
+var countDownDate = new Date("Jan 1, " + nextYear+ " 12:00:00").getTime();
+
+
 
 // Update the count down every 1 second
 var x = setInterval(function() {
