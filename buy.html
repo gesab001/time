@@ -1,0 +1,267 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Time</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/gesab001/assets/master/images/app-icons/time/icon-192x192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="apple-touch-startup-image" href="https://raw.githubusercontent.com/gesab001/assets/master/images/app-icons/time/icon-192x192.png">
+<meta name="apple-mobile-web-app-title" content="Time">
+<link rel="icon" type="image/x-icon" href="./favicon.ico">
+<link rel="manifest" href="./manifest.json" />
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+ <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  <script src="newyear.js"></script>
+  <script src="include.js"></script>
+<script
+  async
+  src="https://unpkg.com/pwacompat"
+  crossorigin="anonymous"></script>
+<script>
+   if('serviceWorker' in navigator) {
+   navigator.serviceWorker.register('./sw.js', { scope: '/' })
+    .then(function(registration) {
+     var serviceWorker;
+     if (registration.installing) {
+       serviceWorker = registration.installing;
+     } else if (registration.waiting) {
+       serviceWorker = registration.waiting;
+     } else if (registration.active) {
+       serviceWorker = registration.active;
+     }
+
+     if (serviceWorker) {
+       console.log("ServiceWorker phase:", serviceWorker.state);
+
+       serviceWorker.addEventListener('statechange', function (e) {
+      console.log("ServiceWorker phase:", e.target.state);
+       });
+     }
+    });
+   navigator.serviceWorker.ready
+    .then(function(registration) {
+     console.log('ServiceWorker registration ready', registration);
+    });
+    }
+</script>
+<style>
+p {
+  text-align: center;
+  font-size: 60px;
+  margin-top: 0px;
+}
+</style>
+</head>
+<body>
+
+<div class="container-fluid">
+  <br>
+<p id="demo"></p>
+</div>
+
+
+<div w3-include-html="nav-menu.html"></div> 
+ <script>
+includeHTML();
+</script> 
+
+<div ng-app="myApp" ng-controller="myCtrl">
+     {{httperrorMessage}}
+    <p>Enter title : <input type="text" ng-model="title" placeholder="Enter title here"></p>
+    <p>Paste timer json string : <input type="text"  id="output" ng-model="timerlistfile" placeholder="Paste here"></p>
+    <p>Paste timer json url : <input type="text" ng-model="timerlisturl" placeholder="Paste here"></p>
+{{timerlistfile}}
+  <input type="file" name="inputfile"
+            id="inputfile"> 
+    <br> 
+   
+    <pre i></pre> 
+    <button ng-click="loadFile()">load file</button>
+    <button ng-click="loadUrl()">load  url file</button>
+    <button ng-click="addTimer()">Add</button>
+    <button ng-click="saveToFile()">Save Timers to File</button>  
+    {{myWelcome}}
+    <div ng-repeat="item in timerlist track by $index">
+           
+            <div class="card">
+              <div class="card-header"><h1 class="card-title">{{item.name}} added on {{item.startDate | date}}</h1></div>
+              <div id="{{item.name}}" class="card-body">{{item.timesince}}</div>
+              <div class="card-footer">
+                    <button ng-click="start($index)" >start</button >
+                    <button ng-click="cancelTimer($index)">cancel   </button>
+                    <button ng-click="removeTimer($index)">remove</button>
+              </div>
+            </div>
+    </div>
+</div>
+
+<div id="reactapp"></div>
+
+
+</body>
+
+<script>
+//ANGULARJS
+var app = angular.module("myApp", []);
+
+app.controller("myCtrl", function($scope, $interval, $http) {
+
+
+
+
+
+  $scope.theTime = new Date().toLocaleTimeString();
+  $scope.timerlist = getData();
+  $scope.promises = {};
+  $scope.title = "";
+  $scope.httperrorMessage = "no error";
+  $scope.timerlistfile = "";
+  $scope.timerlisturl = "";
+  $scope.myWelcome = "";
+
+  $scope.start;
+
+  $scope.addTimer = function() {
+        var startDate =  new Date().getTime();
+        var jsonobj = {"name": $scope.title,  "startDate": startDate, "timesince": 0};
+        $scope.timerlist.push(jsonobj);
+        saveToLocalStorage($scope.timerlist);
+        $rootScope.$apply();
+
+    };
+  $scope.loadFile = function() {
+        $scope.timerlist = JSON.parse($scope.timerlistfile);        
+        saveToLocalStorage($scope.timerlist);
+        $rootScope.$apply();
+        $scope.loadAllTimers();
+
+    };
+
+
+
+ $scope.removeTimer = function(index) {
+
+        var timername = $scope.timerlist[index]["name"];
+        var promisename = $scope.promises[timername];
+        $interval.cancel(promisename);
+        $scope.timerlist.splice(index,1); 
+        saveToLocalStorage($scope.timerlist);
+        $rootScope.$apply();
+
+    };
+ $scope.cancelTimer = function(index) {
+
+        var timername = $scope.timerlist[index]["name"];
+        var duration = $scope.timerlist[index]["startDate"];
+        $scope.timerlist[index]["timesince"] = 0;
+        var promisename = $scope.promises[timername];
+        $interval.cancel(promisename);
+        $rootScope.$apply();
+
+    };
+  $scope.start = function(index) {
+
+     var  startDate = $scope.timerlist[index]["startDate"];
+     var promise;
+     var incrementTime = function () {
+        var timesince = new Date().getTime();
+        var distance = timesince - startDate;
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        $scope.timerlist[index]["timesince"] = days + "d " + hours + "h " + minutes + "m " + seconds + "s since " + $scope.timerlist[index]["name"];
+  
+     }
+     promise = $interval(incrementTime, 1000);
+     var timername =  $scope.timerlist[index]["name"]; 
+     $scope.promises[timername] = promise; 
+  };
+  $scope.loadAllTimers = function(){
+       if ($scope.timerlist.length>0){
+          for (var x=0; x<$scope.timerlist.length; x++){
+             $scope.start(x);
+          }
+       }
+  }
+  
+  $scope.loadAllTimers();
+  $scope.saveToFile = function() {
+        alert(JSON.stringify($scope.timerlist));
+  };
+  $scope.loadUrl = function() {
+    alert("are you sure? you will replace the storage version with this one.");
+    $http({
+      method : "GET",
+      url : $scope.timerlisturl
+    }).then(function mySuccess(response) {
+        $scope.timerlist = response.data;
+        saveToLocalStorage($scope.timerlist); 
+        $rootScope.$apply();
+
+      }, function myError(response) {
+        $scope.myWelcome = response.statusText;
+    });
+    $scope.loadAllTimers();
+  }   
+
+});
+
+
+function saveToLocalStorage(jsondata){
+    // Check browser support
+    if (typeof(Storage) !== "undefined") {
+
+      localStorage.setItem("buythis", JSON.stringify(jsondata));
+    
+    } 
+}
+
+function getData(){
+  var jsondata = [];
+  if("buy" in localStorage){
+  
+    jsondata = JSON.parse(localStorage.getItem("buythis"));
+
+  } else {
+
+   jsondata = [];
+  }
+  return jsondata;
+}
+</script>
+
+<script type="text/babel">
+//REACTJS
+      class Hello extends React.Component {
+        render() {
+          return <h1>Hello ReactJS!</h1>
+        }
+      }
+
+      ReactDOM.render(<Hello />, document.getElementById('reactapp'))
+</script>
+
+  <script type="text/javascript"> 
+        document.getElementById('inputfile') 
+            .addEventListener('change', function() { 
+              
+            var fr=new FileReader(); 
+            fr.onload=function(){ 
+                document.getElementById('output') 
+                        .value=fr.result; 
+            } 
+              
+            fr.readAsText(this.files[0]); 
+        }) 
+    </script> 
+
+</html>
+
