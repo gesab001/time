@@ -1,13 +1,13 @@
 var CACHE_NAME = 'myapp-cache-v1';
 var urlsToCache = [
  'index.html',
- '*.png',
- '*.json',
- '*.js',
- '*.css',
- '*.webmanifest',
- './assets/*.png',
- './assets/*.json'
+// '*.png',
+// '*.json',
+// '*.js',
+// '*.css',
+// '*.webmanifest',
+// './assets/*.png',
+// './assets/*.json'
 ];
 
 window.addEventListener('beforeinstallprompt', (event) => {
@@ -20,7 +20,7 @@ window.addEventListener('beforeinstallprompt', (event) => {
 
 butInstall.addEventListener('click', () => {
   console.log('👍', 'butInstall-clicked');
-  const promptEvent = window.deferredPrompt;
+  const promptEvent = window.deferredPrompt;    
   if (!promptEvent) {
     // The deferred prompt isn't available.
     return;
