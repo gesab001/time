@@ -122,6 +122,8 @@ includeHTML();
             
             <!-- Modal body -->
             <div class="modal-body">
+              <input type="text" ng-model="copytimerlist" id="myInput" hidden>
+
               {{timerlist}}
             </div>
             
@@ -129,6 +131,7 @@ includeHTML();
             <div class="modal-footer">
               <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
               <button type="button" ng-click="share()" class="btn btn-success">Share</button>
+              <button type="button" ng-click="copyToClipboard()" class="btn btn-success">Copy</button>
             </div>
             
           </div>
@@ -155,6 +158,7 @@ app.controller("myCtrl", function($scope, $interval, $http) {
 
   $scope.theTime = new Date().toLocaleTimeString();
   $scope.timerlist = getData();
+  $scope.copytimerlist = $scope.timerlist;
   $scope.promises = {};
   $scope.title = "";
   $scope.httperrorMessage = "no error";
@@ -250,14 +254,26 @@ app.controller("myCtrl", function($scope, $interval, $http) {
   $scope.share = function() {
         if (navigator.share) {
           navigator.share({
-            title: 'web.dev',
-            text: 'Check out web.dev.',
-            url: 'https://web.dev/',
+            title: 'timesince.json',
+            text: JSON.stringify(timerlist),
+            url: '',
           })
             .then(() => console.log('Successful share'))
             .catch((error) => console.log('Error sharing', error));
         }
   } 
+    $scope.copyToClipboard = function () {
+        var copyElement = document.createElement("textarea");
+        copyElement.style.position = 'fixed';
+        copyElement.style.opacity = '0';
+        copyElement.textContent = JSON.stringify($scope.timerlist);
+        var body = document.getElementsByTagName('body')[0];
+        body.appendChild(copyElement);
+        copyElement.select();
+        document.execCommand('copy');
+        body.removeChild(copyElement);
+        alert("copied to clipboard" + JSON.stringify($scope.timerlist));
+    }
 
 });
 
