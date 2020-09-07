@@ -255,7 +255,7 @@ app.controller("myCtrl", function($scope, $interval, $http) {
         if (navigator.share) {
           navigator.share({
             title: 'timesince.json',
-            text: JSON.stringify(timerlist),
+            text: JSON.stringify($scope.timerlist),
             url: '',
           })
             .then(() => console.log('Successful share'))
