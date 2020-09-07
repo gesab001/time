@@ -72,16 +72,28 @@ p {
 includeHTML();
 </script> 
 
-<div ng-app="myApp" ng-controller="myCtrl">
+<div class="container-fluid" ng-app="myApp" ng-controller="myCtrl">
      {{httperrorMessage}}
-    <p>Enter title : <input type="text" ng-model="title" placeholder="Enter title here"></p>
-    <p>Paste timer json string : <input type="text"  id="output" ng-model="timerlistfile" placeholder="Paste here"></p>
-    <p>Paste timer json url : <input type="text" ng-model="timerlisturl" placeholder="Paste here"></p>
+
+     <div class="form-group">
+      <label for="title">Title</label>
+      <input type="text" class="form-control" id="title" ng-model="title" placeholder="Enter title here">
+    </div>
+     <div class="form-group">
+      <label for="output">Paste timer json string</label>
+      <input type="text" class="form-control" id="output" ng-model="timerlistfile" placeholder="Paste here">
+    </div>
+     <div class="form-group">
+      <label for="timerlisturl">Paste timer json url</label>
+      <input type="text" class="form-control" id="timerlisturl" ng-model="timerlisturl" placeholder="Paste here">
+    </div>
+
 {{timerlistfile}}
-  <input type="file" name="inputfile"
-            id="inputfile"> 
-    <br> 
-   
+    <div class="form-group">
+      <label for="timerlisturl">Paste timer json url</label>
+      <input type="file" class="form-control" id="inputfile" name="inputfile">
+    </div>
+    
     <pre i></pre> 
     <button ng-click="loadFile()">load file</button>
     <button ng-click="loadUrl()">load  url file</button>
