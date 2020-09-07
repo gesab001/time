@@ -7,6 +7,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/gesab001/assets/master/images/app-icons/time/icon-192x192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -72,36 +74,13 @@ p {
 includeHTML();
 </script> 
 
-<div class="container-fluid" ng-app="myApp" ng-controller="myCtrl">
+<div  ng-app="myApp" ng-controller="myCtrl">
      {{httperrorMessage}}
+  <div class="d-flex justify-content-between mb-3">
+    <i class="p-2 fa fa-pencil-square-o fa-3x" ></i>
+    <i class="p-2 fa fa-plus fa-3x" data-toggle="modal" data-target="#newItemModal"></i>
+  </div>
 
-     <div class="form-group">
-      <label for="title">Title</label>
-      <input type="text" class="form-control" id="title" ng-model="title" placeholder="Enter title here">
-    </div>
-     <div class="form-group">
-      <label for="output">Paste timer json string</label>
-      <input type="text" class="form-control" id="output" ng-model="timerlistfile" placeholder="Paste here">
-    </div>
-     <div class="form-group">
-      <label for="timerlisturl">Paste timer json url</label>
-      <input type="text" class="form-control" id="timerlisturl" ng-model="timerlisturl" placeholder="Paste here">
-    </div>
-
-{{timerlistfile}}
-    <div class="form-group">
-      <label for="timerlisturl">Paste timer json url</label>
-      <input type="file" class="form-control" id="inputfile" name="inputfile">
-    </div>
-    
-    <pre i></pre> 
-    <button ng-click="loadFile()">load file</button>
-    <button ng-click="loadUrl()">load  url file</button>
-    <button ng-click="addTimer()">Add</button>
-    <button ng-click="saveToFile()">Save Timers to File</button>  
- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-    Open modal
-  </button>
     {{myWelcome}}
     <div ng-repeat="item in timerlist track by $index">
            
@@ -117,9 +96,7 @@ includeHTML();
     </div>
 
     <div class="container">
-      <h2>Modal Example</h2>
-      <!-- Button to Open the Modal -->
-     
+         
 
       <!-- The Modal -->
       <div class="modal" id="myModal">
@@ -129,6 +106,8 @@ includeHTML();
             <!-- Modal Header -->
             <div class="modal-header">
               <h4 class="modal-title">Modal Heading</h4>
+              <button type="button" ng-click="share()" class="btn btn-success">Share</button>
+              <button type="button" ng-click="copyToClipboard()" class="btn btn-success">Copy</button>
               <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             
@@ -142,8 +121,63 @@ includeHTML();
             <!-- Modal footer -->
             <div class="modal-footer">
               <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+           
+            </div>
+            
+          </div>
+        </div>
+      </div>
+      
+    </div>
+
+   <div class="container">
+       
+
+      <!-- The Modal -->
+      <div class="modal" id="newItemModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+          
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Modal Heading</h4>
               <button type="button" ng-click="share()" class="btn btn-success">Share</button>
               <button type="button" ng-click="copyToClipboard()" class="btn btn-success">Copy</button>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            
+            <!-- Modal body -->
+            <div class="modal-body">
+     <div class="form-group">
+      <label for="title">Title</label>
+      <input type="text" class="form-control" id="title" ng-model="title" placeholder="Enter title here">
+    </div>
+     <div class="form-group">
+      <label for="output">Paste timer json string</label>
+      <input type="text" class="form-control" id="output" ng-model="timerlistfile" placeholder="Paste here">
+    </div>
+     <div class="form-group">
+      <label for="timerlisturl">Paste timer json url</label>
+      <input type="text" class="form-control" id="timerlisturl" ng-model="timerlisturl" placeholder="Paste here">
+    </div>
+    <div class="form-group">
+      <label for="timerlisturl">Paste timer json url</label>
+      <input type="file" class="form-control" id="inputfile" name="inputfile">
+    </div>
+    
+    <pre i></pre> 
+    <button ng-click="loadFile()">load file</button>
+    <button ng-click="loadUrl()">load  url file</button>
+    <button ng-click="addTimer()">Add</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+       Show json
+    </button>
+            </div>
+            
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+           
             </div>
             
           </div>
@@ -173,7 +207,7 @@ app.controller("myCtrl", function($scope, $interval, $http) {
   $scope.copytimerlist = $scope.timerlist;
   $scope.promises = {};
   $scope.title = "";
-  $scope.httperrorMessage = "no error";
+  $scope.httperrorMessage = "";
   $scope.timerlistfile = "";
   $scope.timerlisturl = "";
   $scope.myWelcome = "";
